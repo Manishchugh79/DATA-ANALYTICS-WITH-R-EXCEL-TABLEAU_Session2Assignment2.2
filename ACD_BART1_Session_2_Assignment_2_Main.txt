@@ -1,0 +1,147 @@
+﻿Session 2 – Introduction to
+      Working with R
+       Assignment - 2
+Contents
+
+  Introduction ..................................................................................................................................................... 2
+
+  Objective .......................................................................................................................................................... 2
+
+  Prerequisites .................................................................................................................................................... 2
+
+  Associated Data Files ....................................................................................................................................... 2
+
+  Problem Statement ......................................................................................................................................... 2
+
+  Expected Output .............................................................................................................................................. 3
+
+
+
+
+   Copyrights© 2017, AcadGild. All Rights Reserved                                                                                                                1
+     Introduction
+This assignment will help you to understand the key concepts learnt in this session.
+
+
+     Objective
+This assignment will test your skills on the basics of R.
+
+
+     Prerequisites
+Not Applicable
+
+
+     Associated Data Files
+Not Applicable
+
+
+     Problem Statement
+1. Read multiple JSON files into a directory to convert into a dataset.
+I have files text1, text2, text3 in the directory JSON.
+
+Answer:
+setwd("Users/Desktop/json")
+temp = list.files(pattern="text*.")
+myfiles = lapply(temp, read.delim)
+library("rjson")
+json_file <- "myfiles"
+library(jsonlite)
+out <- jsonlite::fromJSON(json_file)
+out[vapply(out, is.null, logical(1))] <- "none"
+data.frame(out, stringsAsFactors = FALSE)[,1:5]
+View(out)
+
+
+
+
+2. Parse the following JSON into a data frame.
+js<-'{
+"name": null, "release_date_local": null, "title": "3 (2011)",
+"opening_weekend_take": 1234, "year": 2011,
+"release_date_wide": "2011-09-16", "gross": 59954
+}'
+
+Answer:
+d <- data.frame(
+  id = c(1, 2),
+  js = c(
+'{"name": null, "release_date_local": null, "title": "3 (2011)",
+    "opening_weekend_take": 1234, "year": 2011,
+    "release_date_wide": "2011-09-16", "gross": 59954
+    }'
+  ),
+  stringsAsFactors = FALSE
+)
+
+d %>% 
+  mutate(json = map(js, ~ fromJSON(.) %>% as.data.frame())) %>% 
+  unnest(js)
+
+
+
+
+3. Write a script for Variable Binning using R.
+
+> install.packages("smbinning")
+> library(smbinning)
+
+> set.seed(100)
+> rpois(100,6)
+  [1]  5  4  6  2  6  6  8  5  6  4  7  9  4  5  8  7  4  5  5  7  6  7  6  8  5  4
+ [27]  8  9  6  4  6 10  5 10  7  9  4  7 12  3  5  9  8  8  6  6  8  9  4  5  5  4
+ [53]  4  4  6  4  3  4  6  4  6  7 11  7  5  5  6  5  4  7  5  5  6 11  7  7  9  8
+ [79]  8  3  6  6 10 12  2  6  7  4  5  7  9  4  5  6  9  5  6  3  2  8
+> set.seed(100)
+> range(rpois(100,6))
+[1]  2 12
+> set.seed(100)
+> range(rpois(100,6))[1]:range(rpois(100,6))[2]
+ [1]  2  3  4  5  6  7  8  9 10 11 12 13
+> set.seed(100)
+> cut(rpois(100,6), range(rpois(100,6))[1]:range(rpois(100,6))[2])
+  [1] (4,5]  (3,4]  (5,6]  (1,2]  (5,6]  (5,6]  (7,8]  (4,5]  (5,6]  (3,4]  (6,7] 
+ [12] (8,9]  (3,4]  (4,5]  (7,8]  (6,7]  (3,4]  (4,5]  (4,5]  (6,7]  (5,6]  (6,7] 
+ [23] (5,6]  (7,8]  (4,5]  (3,4]  (7,8]  (8,9]  (5,6]  (3,4]  (5,6]  (9,10] (4,5] 
+ [34] (9,10] (6,7]  (8,9]  (3,4]  (6,7]  <NA>   (2,3]  (4,5]  (8,9]  (7,8]  (7,8] 
+ [45] (5,6]  (5,6]  (7,8]  (8,9]  (3,4]  (4,5]  (4,5]  (3,4]  (3,4]  (3,4]  (5,6] 
+ [56] (3,4]  (2,3]  (3,4]  (5,6]  (3,4]  (5,6]  (6,7]  <NA>   (6,7]  (4,5]  (4,5] 
+ [67] (5,6]  (4,5]  (3,4]  (6,7]  (4,5]  (4,5]  (5,6]  <NA>   (6,7]  (6,7]  (8,9] 
+ [78] (7,8]  (7,8]  (2,3]  (5,6]  (5,6]  (9,10] <NA>   (1,2]  (5,6]  (6,7]  (3,4] 
+ [89] (4,5]  (6,7]  (8,9]  (3,4]  (4,5]  (5,6]  (8,9]  (4,5]  (5,6]  (2,3]  (1,2] 
+[100] (7,8] 
+Levels: (1,2] (2,3] (3,4] (4,5] (5,6] (6,7] (7,8] (8,9] (9,10]
+> cut(rpois(100,6), pretty(rpois(100,6)))
+  [1] (8,10]  (6,8]   (8,10]  (6,8]   (4,6]   (10,12] (4,6]   (6,8]   (4,6]   (8,10] 
+ [11] (4,6]   (8,10]  (4,6]   (4,6]   (4,6]   (6,8]   (4,6]   (6,8]   (4,6]   (6,8]  
+ [21] (4,6]   (4,6]   (4,6]   (12,14] (4,6]   (12,14] (6,8]   (4,6]   (4,6]   (8,10] 
+ [31] (2,4]   (2,4]   (4,6]   (4,6]   (2,4]   (4,6]   (4,6]   (2,4]   (6,8]   (6,8]  
+ [41] (6,8]   (4,6]   (4,6]   (2,4]   (4,6]   (2,4]   (6,8]   (10,12] (4,6]   (6,8]  
+ [51] (0,2]   (2,4]   (6,8]   (2,4]   (4,6]   (2,4]   (8,10]  (2,4]   (10,12] (0,2]  
+ [61] (2,4]   (2,4]   (6,8]   (0,2]   (4,6]   (6,8]   (4,6]   (4,6]   (6,8]   (10,12]
+ [71] (6,8]   (4,6]   (4,6]   (4,6]   (4,6]   (2,4]   (2,4]   (4,6]   (2,4]   (6,8]  
+ [81] (4,6]   (2,4]   (4,6]   (2,4]   (6,8]   (4,6]   (4,6]   (4,6]   (10,12] (6,8]  
+ [91] (4,6]   (4,6]   (8,10]  (4,6]   (4,6]   (4,6]   (2,4]   (2,4]   (6,8]   (4,6]  
+Levels: (0,2] (2,4] (4,6] (6,8] (8,10] (10,12] (12,14]
+> set.seed(100)
+> pretty(rpois(100,6))
+[1]  2  4  6  8 10 12
+
+
+
+
+
+
+
+
+
+
+
+     Copyrights© 2017, AcadGild. All Rights Reserved                                   2
+   Expected Output
+Not Applicable
+
+
+
+
+  Copyrights© 2017, AcadGild. All Rights Reserved   3
+
